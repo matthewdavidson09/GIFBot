@@ -31,3 +31,7 @@ func PostComment(token, repo string, issueNumber int, body string) error {
 	}
 	return nil
 }
+
+func IsForkPR(event PullRequestEvent) bool {
+	return event.PullRequest.Head.Repo.FullName != event.PullRequest.Base.Repo.FullName
+}

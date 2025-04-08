@@ -61,11 +61,8 @@ func main() {
 		log.Fatalf("Error posting comment: %v", err)
 	}
 
-	headRepo := event.PullRequest.Head.Repo.FullName
-	baseRepo := event.PullRequest.Base.Repo.FullName
-
-	if headRepo != baseRepo {
-		log.Println("PR is from a fork. Skipping comment to avoid 403.")
+	if IsForkPR(event) {
+		log.Println("Skipping comment: forked PR detected.")
 		return
 	}
 }
