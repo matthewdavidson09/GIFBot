@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
   issues: write
-
+  pull-requests: write
 
 jobs:
   test:
@@ -20,3 +20,5 @@ jobs:
         uses: ./
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
