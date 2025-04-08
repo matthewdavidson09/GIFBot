@@ -2,7 +2,12 @@ name: Test GIF Bot Locally
 
 on:
   pull_request:
-    types: [opened, closed]
+    types: [opened, closed, synchronize]
+
+permissions:
+  contents: read
+  issues: write
+
 
 jobs:
   test:

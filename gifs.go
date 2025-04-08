@@ -3,7 +3,7 @@ package main
 import "math/rand"
 
 var gifs = map[string][]string{
-	"opened": {
+	"opened_or_synchronize": {
 		// Hackerman
 		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTk0M202a254dnFsYWozMzNhYWZvMXlzdzd3bzMxY2I2ZDJ0OHp2ZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ieBWQkIVEELhbizGAp/giphy.gif",
 		"https://media.giphy.com/media/KHVk8OgbP0Od6pJGGM/giphy.gif?cid=790b7611a943m6knxvqlaj333aafo1ysw7wo31cb6d2t8zvf",
