@@ -10,7 +10,8 @@ import (
 type PullRequestEvent struct {
 	Action      string `json:"action"`
 	PullRequest struct {
-		Number int `json:"number"`
+		Number int  `json:"number"`
+		Merged bool `json:"merged"`
 	} `json:"pull_request"`
 	Repository struct {
 		FullName string `json:"full_name"`
@@ -19,27 +20,34 @@ type PullRequestEvent struct {
 
 func main() {
 	eventPath := os.Getenv("GITHUB_EVENT_PATH")
-	token := os.Getenv("INPUT_GITHUB_TOKEN")
+	token := os.Getenv("INPUT_GITHUB_TOKEN") // ✅ Note: INPUT_ prefix
 
 	data, err := os.ReadFile(eventPath)
 	if err != nil {
-		log.Fatalf("Error reading event: %v", err)
+		log.Fatalf("Error reading event file: %v", err)
 	}
 
 	var event PullRequestEvent
 	if err := json.Unmarshal(data, &event); err != nil {
-		log.Fatalf("Error parsing JSON: %v", err)
+		log.Fatalf("Error parsing event JSON: %v", err)
 	}
 
-	gif := GetGif(event.Action)
+	// 🔁 Normalize action if needed
+	action := event.Action
+	if action == "synchronize" || action == "opened" {
+		action = "opened_or_synchronize"
+	} else if action == "closed" && event.PullRequest.Merged {
+		action = "merged"
+	}
+
+	gif := GetGif(action)
 	if gif == "" {
-		log.Printf("No GIF configured for action: %s", event.Action)
+		log.Printf("No GIF configured for action: %s", action)
 		return
 	}
 
 	comment := fmt.Sprintf("![gif](%s)", gif)
-	err = PostComment(token, event.Repository.FullName, event.PullRequest.Number, comment)
-	if err != nil {
+	if err := PostComment(token, event.Repository.FullName, event.PullRequest.Number, comment); err != nil {
 		log.Fatalf("Error posting comment: %v", err)
 	}
 }
