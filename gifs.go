@@ -38,7 +38,7 @@ var gifs = map[string][]string{
 		"https://media.giphy.com/media/EdBNxhzIVyup9sGCfc/giphy.gif?cid=ecf05e47vkkyxokiw29r17sb65tx20d1iyqsts4gt2pkr50f",
 		"https://media.giphy.com/media/IwS7GpyzFnD0ov6eyZ/giphy.gif?cid=ecf05e47dwj7ftj20c2g9d9yvy9ywl1d12wc1e1jufhm255l",
 	},
-	"merged": {
+	"closed": {
 		// We Did It
 		"https://media.giphy.com/media/zgp0WXOQj6ogJdPRfN/giphy.gif?cid=790b76114qy3w79irxtzilontc3g9kh99dq6zr6ihc64x5k0",
 		"https://media.giphy.com/media/aLdiZJmmx4OVW/giphy.gif?cid=ecf05e47zxl85ezg9240wrv26y3kkk01dqiw0640n1tdomcq",
