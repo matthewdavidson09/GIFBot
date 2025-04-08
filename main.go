@@ -19,7 +19,7 @@ type PullRequestEvent struct {
 
 func main() {
 	eventPath := os.Getenv("GITHUB_EVENT_PATH")
-	token := os.Getenv("GITHUB_TOKEN")
+	token := os.Getenv("INPUT_GITHUB_TOKEN")
 
 	data, err := os.ReadFile(eventPath)
 	if err != nil {
