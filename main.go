@@ -30,7 +30,7 @@ type PullRequestEvent struct {
 
 func main() {
 	eventPath := os.Getenv("GITHUB_EVENT_PATH")
-	token := os.Getenv("INPUT_GITHUB_TOKEN") // ✅ Note: INPUT_ prefix
+	token := os.Getenv("INPUT_GITHUB_TOKEN") // Must use INPUT_ prefix in Docker actions
 
 	data, err := os.ReadFile(eventPath)
 	if err != nil {
@@ -42,7 +42,13 @@ func main() {
 		log.Fatalf("Error parsing event JSON: %v", err)
 	}
 
-	// 🔁 Normalize action if needed
+	// Check if the PR is from a fork; if so, skip commenting to avoid GitHub 403 errors.
+	if IsForkPR(event) {
+		log.Println("Skipping comment: forked PR detected.")
+		return
+	}
+
+	// Normalize action if needed
 	action := event.Action
 	if action == "synchronize" || action == "opened" {
 		action = "opened_or_synchronize"
@@ -59,10 +65,5 @@ func main() {
 	comment := fmt.Sprintf("![gif](%s)", gif)
 	if err := PostComment(token, event.Repository.FullName, event.PullRequest.Number, comment); err != nil {
 		log.Fatalf("Error posting comment: %v", err)
-	}
-
-	if IsForkPR(event) {
-		log.Println("Skipping comment: forked PR detected.")
-		return
 	}
 }
