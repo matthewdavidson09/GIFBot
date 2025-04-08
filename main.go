@@ -12,6 +12,16 @@ type PullRequestEvent struct {
 	PullRequest struct {
 		Number int  `json:"number"`
 		Merged bool `json:"merged"`
+		Head   struct {
+			Repo struct {
+				FullName string `json:"full_name"`
+			} `json:"repo"`
+		} `json:"head"`
+		Base struct {
+			Repo struct {
+				FullName string `json:"full_name"`
+			} `json:"repo"`
+		} `json:"base"`
 	} `json:"pull_request"`
 	Repository struct {
 		FullName string `json:"full_name"`
@@ -49,5 +59,13 @@ func main() {
 	comment := fmt.Sprintf("![gif](%s)", gif)
 	if err := PostComment(token, event.Repository.FullName, event.PullRequest.Number, comment); err != nil {
 		log.Fatalf("Error posting comment: %v", err)
+	}
+
+	headRepo := event.PullRequest.Head.Repo.FullName
+	baseRepo := event.PullRequest.Base.Repo.FullName
+
+	if headRepo != baseRepo {
+		log.Println("PR is from a fork. Skipping comment to avoid 403.")
+		return
 	}
 }
