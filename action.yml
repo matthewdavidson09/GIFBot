@@ -12,7 +12,6 @@ runs:
   image: 'Dockerfile'
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
-    GITHUB_EVENT_PATH: ${{ github.event_path }}
 
 branding:
   color: 'purple'
