@@ -4,3 +4,9 @@
 *.bak
 *.swp
 *.swo
+*.DS_Store
+*.class
+*.exe
+*.o
+*.out
+*.pyc
