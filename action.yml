@@ -1,0 +1,11 @@
+name: 'PR GIF Bot'
+description: 'Posts themed GIFs on PR events'
+author: 'matthewdavidson09'
+inputs:
+  github_token:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
