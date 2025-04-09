@@ -23,9 +23,13 @@ func GetGifForEvent(eventKey string, config map[string][]string) string {
 }
 
 func loadGifMapping() map[string][]string {
-	data, err := os.ReadFile("gif.json")
+	configPath := os.Getenv("CONFIG_PATH")
+	if configPath == "" {
+		configPath = "gif.json"
+	}
+	data, err := os.ReadFile(configPath)
 	if err != nil {
-		log.Printf("gif.json not found: %v", err)
+		log.Printf("%s not found: %v", configPath, err)
 		return map[string][]string{}
 	}
 
