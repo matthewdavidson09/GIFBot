@@ -6,12 +6,17 @@ inputs:
   github_token:
     description: 'GitHub token for posting comments'
     required: true
+  config_path:
+    description: 'Path to the gif.json configuration file (defaults to gif.json in the repository root)'
+    required: false
+    default: 'gif.json'
 
 runs:
   using: 'docker'
   image: 'docker://ghcr.io/matthewdavidson09/gifbot:latest'
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
+    CONFIG_PATH: ${{ inputs.config_path }}
 
 branding:
   color: 'purple'

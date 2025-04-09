@@ -1,80 +1,47 @@
 package main
 
-import "math/rand"
+import (
+	"encoding/json"
+	"log"
+	"math/rand"
+	"os"
+	"strings"
+	"time"
+)
 
-var gifs = map[string][]string{
-	"opened_or_synchronize": {
-		// Hackerman
-		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTk0M202a254dnFsYWozMzNhYWZvMXlzdzd3bzMxY2I2ZDJ0OHp2ZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ieBWQkIVEELhbizGAp/giphy.gif",
-		"https://media.giphy.com/media/KHVk8OgbP0Od6pJGGM/giphy.gif?cid=790b7611a943m6knxvqlaj333aafo1ysw7wo31cb6d2t8zvf",
-		"https://media.giphy.com/media/oFYKw5OTZBZzVONpUh/giphy.gif?cid=790b7611a943m6knxvqlaj333aafo1ysw7wo31cb6d2t8zvf",
-		"https://media.giphy.com/media/h8Ho5922OJ6NsP5Ye4/giphy.gif?cid=ecf05e47knouc1kgz9gk03y2js94fsyvjtvcuxunwv5mspfd",
-		"https://media.giphy.com/media/XCyJsCbOeTBmEsHIss/giphy.gif?cid=ecf05e47knouc1kgz9gk03y2js94fsyvjtvcuxunwv5mspfd",
-		"https://media.giphy.com/media/o0vwzuFwCGAFO/giphy.gif?cid=ecf05e47hgzxdkvxtk79dxs2x6fdxltmjswqo28f0vmlryui",
-		"https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif?cid=ecf05e47hgzxdkvxtk79dxs2x6fdxltmjswqo28f0vmlryui",
-		"https://media.giphy.com/media/Qq7XAPjyzW1mu8B7VH/giphy.gif?cid=ecf05e47hgzxdkvxtk79dxs2x6fdxltmjswqo28f0vmlryui",
-		"https://media.giphy.com/media/D0EjguuQzYr9m/giphy.gif?cid=ecf05e474tzp5bqwb3snofxmryqvp16pjek1khmpsn425klc",
-		"https://media.giphy.com/media/P5wPrhzZDdeJW/giphy.gif?cid=ecf05e47vk36s6s4si8axbh66hpu75xo3rlm3a2sfbxtrzux",
-		"https://media.giphy.com/media/TOWeGr70V2R1K/giphy.gif?cid=ecf05e47t5uqf1bfce8c0d0kktm6k8hhh6ls00fjsxzfupsm",
-		// Red Carpet
-		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGd0bDNsd25hNjJvc24yZTh3ODl4ZmcxMHVxOHg5ZTFvZGl5N3FtbyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7adoebY7yraciDI9Lq/giphy.gif",
-		"https://media.giphy.com/media/3o6YfUH0JUDycQSHlK/giphy.gif?cid=790b7611xgtl3lwna62osn2e8w89xfg10uq8x9e1odiy7qmo",
-		"https://media.giphy.com/media/gTviM5HfTDKapOJ8eL/giphy.gif?cid=790b7611xgtl3lwna62osn2e8w89xfg10uq8x9e1odiy7qmo",
-		"https://media.giphy.com/media/3o85xDEl6Fugkja2LS/giphy.gif?cid=ecf05e47763t04mqbakt4x0x5chbzl3iktl95kauvhh3sobr",
-		"https://media.giphy.com/media/wtHolvfjB1ToI/giphy.gif?cid=ecf05e47orv6d4vf4ya7jirmj0zlyz438p0p6zun2dypi2ob",
-		// Excitement
-		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHgwbjI3MmFvcXNhaDUweDZ6ejkweDI0Y2tmM2o3c3c5ZXh4MHF1MyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Fo1cy8mqGDvbjpJBB7/giphy.gif",
-		"https://media.giphy.com/media/nSkIv4g54tFni/giphy.gif?cid=790b7611lx0n272aoqsah50x6zz90x24ckf3j7sw9exx0qu3",
-		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHgwbjI3MmFvcXNhaDUweDZ6ejkweDI0Y2tmM2o3c3c5ZXh4MHF1MyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/o75ajIFH0QnQC3nCeD/giphy.gif",
-		"https://media.giphy.com/media/dkGhBWE3SyzXW/giphy.gif?cid=790b7611lx0n272aoqsah50x6zz90x24ckf3j7sw9exx0qu3",
-		"https://media.giphy.com/media/i6IqXuLaTdqRW/giphy.gif?cid=790b7611lx0n272aoqsah50x6zz90x24ckf3j7sw9exx0qu3",
-		"https://media.giphy.com/media/QqnUsCKQOtR8SNv6Yn/giphy.gif?cid=ecf05e47fcs4altk316suyonbe80f8ldbtsxzc93wk4nuovb",
-		"https://media.giphy.com/media/xT5LMQ8rHYTDGFG07e/giphy.gif?cid=ecf05e47q7slm2u87a3vx5b1ubc6t9ftp27bmv0is5vdzpi8",
-		// Let's Do This
-		"https://media.giphy.com/media/l3q2UyW34cT2rcgko/giphy.gif?cid=790b76116krct6we9l4atybjbui824u8thi2mksjmbjaxscv",
-		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmtyY3Q2d2U5bDRhdHliamJ1aTgyNHU4dGhpMm1rc2ptYmpheHNjdiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/BpGWitbFZflfSUYuZ9/giphy.gif",
-		"https://media.giphy.com/media/CpyfM1h1qLgWECSBxf/giphy.gif?cid=ecf05e47f7x4236fuqs3u3hcci47y88g5rc1pvkn07pxio20",
-		"https://media.giphy.com/media/3o7TKUM3IgJBX2as9O/giphy.gif?cid=ecf05e47l32c0er5hjszctbdcxs6l7f8cphd3b69hu73ughx",
-		"https://media.giphy.com/media/EdBNxhzIVyup9sGCfc/giphy.gif?cid=ecf05e47vkkyxokiw29r17sb65tx20d1iyqsts4gt2pkr50f",
-		"https://media.giphy.com/media/IwS7GpyzFnD0ov6eyZ/giphy.gif?cid=ecf05e47dwj7ftj20c2g9d9yvy9ywl1d12wc1e1jufhm255l",
-	},
-	"merged": {
-		// We Did It
-		"https://media.giphy.com/media/zgp0WXOQj6ogJdPRfN/giphy.gif?cid=790b76114qy3w79irxtzilontc3g9kh99dq6zr6ihc64x5k0",
-		"https://media.giphy.com/media/aLdiZJmmx4OVW/giphy.gif?cid=ecf05e47zxl85ezg9240wrv26y3kkk01dqiw0640n1tdomcq",
-		"https://media.giphy.com/media/BMfpwJ0eSGJ3I3UZYX/giphy.gif?cid=ecf05e476ksso09w1p88qhep1awwwvsyzpcmomel3i85b7xx",
-		"https://media.giphy.com/media/3o6ZtbZyuAYJg9cTrG/giphy.gif?cid=ecf05e47erfydotdxh53lriogia21wx66nss0xmicup45bdg",
-		"https://media.giphy.com/media/r2BtghAUTmpP2/giphy.gif?cid=ecf05e47erfydotdxh53lriogia21wx66nss0xmicup45bdg",
-		"https://media.giphy.com/media/u2Tll62t3t52PGCk0u/giphy.gif?cid=ecf05e477m752g3edcwhpyoisfzi5a12igva0rnhbdusevsm",
-		"https://media.giphy.com/media/uUstMQMfp8NAk1MWFO/giphy.gif?cid=ecf05e47hzy44vl5rz0dfrftoopbjxhky8yp3ein62vj2nic",
-		"https://media.giphy.com/media/bgy65QnUWxTlR0j2yz/giphy.gif?cid=ecf05e47q9ii7ep5lunnkxcx69uyl3lcszbc3yysj5yf45vn",
-		// Mission Accomplished
-		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaHB0Y2w0Y2NpcDlkenllZjBxZWpuM2V4M2dpMXA2Z2NuMGxhaHhuYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/12e5dX36aMp2Ba/giphy.gif",
-		"https://media.giphy.com/media/3o6nV9IUiNn1LCjSak/giphy.gif?cid=790b7611hptcl4ccip9dzyef0qejn3ex3gi1p6gcn0lahxna",
-		"https://media.giphy.com/media/S6Hyy3F1bd90uMYDXj/giphy.gif?cid=790b7611hptcl4ccip9dzyef0qejn3ex3gi1p6gcn0lahxna",
-		"https://media.giphy.com/media/6hjD4IpNpPqgXsrnpl/giphy.gif?cid=790b7611hptcl4ccip9dzyef0qejn3ex3gi1p6gcn0lahxna",
-		"https://media.giphy.com/media/Mp4hQy51LjY6A/giphy.gif?cid=ecf05e47x1am1n9yl4uto78dkhrol5xvaxfwtjdxumi48b3r",
-		"https://media.giphy.com/media/l2JeiBrTISTeM0SK4/giphy.gif?cid=ecf05e47zj9aakgb3zrptsxje6tun4zt1tdgtooxeoklrqvm",
-		"https://media.giphy.com/media/h2TWRTdkpNzGQ3Dh5s/giphy.gif?cid=ecf05e47fi10f3xr40hzsdbrzzkel80sgmhebjyi2rafq89l",
-		"https://media.giphy.com/media/rpPamN9HyeAH2XPGBQ/giphy.gif?cid=ecf05e47tkqgjh8hyq2cnlprbvpckg2cvaiptmdjeyqklr50",
-		"https://media.giphy.com/media/rpPamN9HyeAH2XPGBQ/giphy.gif?cid=ecf05e47tkqgjh8hyq2cnlprbvpckg2cvaiptmdjeyqklr50",
-		"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExamszbjh1cmQ0azJ3ajNmd2Y1ZXBwYmdzanM3MGVtdG1maWZ6Z3kydCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fwi2qY9VmH33uukTXr/giphy.gif",
-		// Nailed It
-		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExamh1MG1xZ3gxOGs5Y2tuN2Qzd2lxeXQ1ZmFuY3d2NnRoZXYzb2ptOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/qlrBlSDevEdFeW5JwV/giphy.gif",
-		"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExamh1MG1xZ3gxOGs5Y2tuN2Qzd2lxeXQ1ZmFuY3d2NnRoZXYzb2ptOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3oEduKVQdG4c0JVPSo/giphy.gif",
-		"https://media.giphy.com/media/SFJE2BSoUaWXBuVVA1/giphy.gif?cid=790b7611jhu0mqgx18k9ckn7d3wiqyt5fancwv6thev3ojm8",
-		"https://media.giphy.com/media/GgL288OGdmkGA/giphy.gif?cid=ecf05e476ptxxpfh85h1nyyik80903hlti7uhu6egt8f7d9f",
-		"https://media.giphy.com/media/i9CL8hNGSP3WnI2lRB/giphy.gif?cid=ecf05e47noywbsx6sykwecnww0e2381f9h1uy0fpha94d04g",
-		"https://media.giphy.com/media/TFO2mwVPIFoOJcuTSC/giphy.gif?cid=ecf05e47th8b67u9ruwe4lfiff47lwjsucaprpz6j93euffm",
-		"https://media.giphy.com/media/Upg1wrLUckpA1pHkyL/giphy.gif?cid=ecf05e47xt8q37qanb3yohnae66ritxias1sln0gp4qol9k8",
-		"https://media.giphy.com/media/FEuUX2nmNDsuMpbMuv/giphy.gif?cid=ecf05e47xm733b88rfayozifpxjveptwwzt57smgzq60mfic",
-		"https://media.giphy.com/media/Zb3hy7N6a0J4bN9y7Y/giphy.gif?cid=ecf05e47mdhwc4pw4rot95262hflokmrezyqbgpe88cjgn54",
-	},
+var rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+// GetGifForEvent returns a random GIF URL for the given GitHub event action.
+func GetGifForEvent(eventKey string, config map[string][]string) string {
+	// Normalize eventKey (assuming keys are lower-case in our config)
+	eventKey = strings.ToLower(eventKey)
+	urls, ok := config[eventKey]
+	if !ok || len(urls) == 0 {
+		return ""
+	}
+	return urls[rnd.Intn(len(urls))]
 }
 
-func GetGif(action string) string {
-	if list, ok := gifs[action]; ok && len(list) > 0 {
-		return list[rand.Intn(len(list))]
+func loadGifMapping() map[string][]string {
+	configPath := os.Getenv("CONFIG_PATH")
+	if configPath == "" {
+		configPath = "gif.json"
 	}
-	return ""
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		log.Printf("%s not found: %v", configPath, err)
+		return map[string][]string{}
+	}
+
+	var mapping map[string][]string
+	if err := json.Unmarshal(data, &mapping); err != nil {
+		log.Fatalf("Error parsing gif.json: %v", err)
+	}
+
+	// Optionally normalize keys. If you want no transformation, remove this loop.
+	normalized := make(map[string][]string)
+	for key, urls := range mapping {
+		normalized[strings.ToLower(key)] = urls
+	}
+	return normalized
 }

@@ -28,9 +28,12 @@ type PullRequestEvent struct {
 	} `json:"repository"`
 }
 
+// gifMapping is loaded from gif.json.
+var gifMapping = loadGifMapping()
+
 func main() {
 	eventPath := os.Getenv("GITHUB_EVENT_PATH")
-	token := os.Getenv("INPUT_GITHUB_TOKEN") // Must use INPUT_ prefix in Docker actions
+	token := os.Getenv("INPUT_GITHUB_TOKEN") // For GitHub Actions, use the INPUT_ prefix.
 
 	data, err := os.ReadFile(eventPath)
 	if err != nil {
@@ -42,23 +45,17 @@ func main() {
 		log.Fatalf("Error parsing event JSON: %v", err)
 	}
 
-	// Check if the PR is from a fork; if so, skip commenting to avoid GitHub 403 errors.
+	// Optional: Skip processing for forked PRs.
 	if IsForkPR(event) {
 		log.Println("Skipping comment: forked PR detected.")
 		return
 	}
 
-	// Normalize action if needed
-	action := event.Action
-	if action == "synchronize" || action == "opened" {
-		action = "opened_or_synchronize"
-	} else if action == "closed" && event.PullRequest.Merged {
-		action = "merged"
-	}
-
-	gif := GetGif(action)
+	// Determine the event key exactly based on the payload and available configuration.
+	eventKey := getEventKey(event, gifMapping)
+	gif := GetGifForEvent(eventKey, gifMapping)
 	if gif == "" {
-		log.Printf("No GIF configured for action: %s", action)
+		log.Printf("No GIF configured for event type: %s", eventKey)
 		return
 	}
 
